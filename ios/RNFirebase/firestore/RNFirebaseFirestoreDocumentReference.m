@@ -37,10 +37,6 @@ static NSString *const typeTimestamp = @"timestamp";
 static NSString *const typeReference = @"reference";
 static NSString *const typeDocumentId = @"documentid";
 static NSString *const typeFieldValue = @"fieldvalue";
-static NSString *const typeFieldValueUnion = @"union";
-static NSString *const typeFieldValueRemove = @"remove";
-static NSString *const typeFieldValueType = @"type";
-static NSString *const typeFieldValueElements = @"elements";
 
 - (id)initWithPath:(RCTEventEmitter *)emitter
     appDisplayName:(NSString *)appDisplayName
@@ -412,25 +408,14 @@ static NSString *const typeFieldValueElements = @"elements";
   }
 
   if ([type isEqualToString:typeFieldValue]) {
-    NSDictionary *fieldValueMap = (NSDictionary *) value;
-    NSString *string = (NSString *) fieldValueMap[typeFieldValueType];
-      
+    NSString *string = (NSString *) value;
+
     if ([string isEqualToString:typeDelete]) {
       return [FIRFieldValue fieldValueForDelete];
     }
 
     if ([string isEqualToString:typeTimestamp]) {
       return [FIRFieldValue fieldValueForServerTimestamp];
-    }
-      
-    if ([string isEqualToString:typeFieldValueUnion]) {
-      NSDictionary *elements = (NSDictionary *) value[typeFieldValueElements];
-      return [FIRFieldValue fieldValueForArrayUnion:elements];
-    }
-      
-    if ([string isEqualToString:typeFieldValueRemove]) {
-      NSDictionary *elements = (NSDictionary *) value[typeFieldValueElements];
-      return [FIRFieldValue fieldValueForArrayRemove:elements];
     }
 
     DLog(@"RNFirebaseFirestore: Unsupported field-value sent to parseJSTypeMap - value is %@",
